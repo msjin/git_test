@@ -1,0 +1,110 @@
+(不完全正确，需要到nginx查看)
+平台
+     platform1 	
+	 10.8.2.159     kohng2Aoko
+			172     Ahv7hiK2pi
+			173     Ao6AiSeiKe
+			152	    Cho4xin0                日志：/tmp/wwo/platform
+	        161	 	Ef1die6Koo
+		    162	 	Roh7eziece （定时任务/usr/local/wenwo/wenwo-schedule）
+
+ 
+客户端
+	10.8.2.216      Ahv7hiK2pi
+
+内部正式线测试nginx服务器
+	10.8.2.195      Ei5ahNee3u
+
+PC版
+	1.tomcat
+		tomcat：tomcat11      10.8.2.167     Aevitiich9             新浪微问            /www/weiwen        /usr/local/tomcat
+		tomcat：tomcat5       10.8.2.219     Ahv7hiK2pi             问我                /www/wenwo         /usr/local/tomcat
+		tomcat：tomcat13      10.8.2.164     peteen0Wa3             新浪微问            /www/weiwen        /usr/local/tomcat
+		tomcat：tomcat10      10.8.2.171     Ahv7hiK2pi             腾讯微问            /www/weiwenqq      /usr/local/tomcat-qq
+		tomcat：tomcat5       10.8.2.150     Ahv7hiK2pi             问我                /www/wenwo         /usr/local/tomcat
+
+	2.nginx
+		nginx ： vm21         10.8.2.169       YieShohm7O 
+ 
+M版
+	1.tomcat
+		vm14 mobileweb1     190 胜喻 Ahxeech0bu        问我M版-Tomcat      /www/wwo-weiwen-m-wenwo        /usr/local/tomcat
+		vm22 tomcat12       165 云师 Egh2dohW6A        腾讯微问-M版        /www/wwo-weiwen-m-qq           /usr/local/tomcat
+		vm21 tomcat14       163 云师 xohsoPai7I        新浪微问-M版-1      /www/wwo-weiwen-m-sina         /usr/local/tomcat-m-sina
+		10.8.2.222      Ahv7hiK2pi			 新浪微问-M版-2
+
+	2.nginx
+		M-Nginx     vm19     nginx     227 云师     weu3agheeF     m.weiwen.wenwo.com m.qq.wenwo.com m.wenwo.com
+ 
+
+3.备份机
+	腾讯+问我	10.8.2.217	Ahv7hiK2pi 
+	子项目机器	10.8.2.191	muzoo9Kooj
+
+微问发版部署相关步骤 
+	1.测试机发版：
+		测试机放在192.168.1.64上 root@192.168.1.42 密码doudou
+		工程路径/www/wwo-weiwen
+		tomcat路径 /usr/local/webserver/tomcat 
+		nginx 路径 /usr/local/nginx 
+	2.weiwenExportService 放在192.168.1.71上 密码doudou
+		是后台和weibo端使用的存问题和回答的接口。
+	3.正式机
+		tomcat：      tomcat11    10.8.2.167      Aevitiich9 
+		tomcat：      tomcat13    10.8.2.164      peteen0Wa3 
+		nginx ：      vm21 179    10.8.2.169      YieShohm7O 
+		 
+		vm02  ：      tomcat2     10.8.2.222      Ahv7hiK2pi
+		vm21  ：      tomcat14    10.8.2.163      xohsoPai7I 
+	 
+	4.腾讯微问正式机
+		tomcat :    tomcat10    10.8.2.171       Ahv7hiK2pi
+		tomcat :    tomcat8     10.8.2.216       Ahv7hiK2pi
+		nginx  :    instsrc1    10.8.2.224       iez9aGeevi
+ 
+	224的nginx是和爱情问我公用的 
+ 
+发版流程：
+	pom->Maven package ,将target上的war包上传到/www/wwo-weiwen上解压，重启tomcat
+ 
+nginx目录
+	log  /home/logs
+	配置 /etc/nginx/ 
+	启动 /etc/init.d/nginx reload
+ 
+注意事项：
+
+测试环境
+	1.打好war包在工程目录解压  在测试机上需要将weiwen.properties替换为测试环境的配置
+	   把war包解压的wwo-weiwen/WEB-INF/config 目录下的weiwen.properties 替换为本地工程wwo-weiwen/WEB-INF/config/weiwen.properties
+	2.解压war包的命令：jar xvf weiwen-weiwen-SNAPSHOTS.war 
+正式环境
+	1.正式机的tomcat 和 nginx 服务器都需要将发版的工程传一遍到服务器上
+	     tomcat运行动态文件数据   nginx处理静态文件和资源文件
+	2.上传文件到正式环境需要先登录到58服务器 再从58服务器登录到正式环境
+user: xiongxd  
+pwd: joo2aseiPh 
+    scp /www/wwo-weiwen/weiwen-weiwen-SNAPSHOTS.war   root@10.8.2.167:/www/wwo-weiwen
+    scp /www/wwo-weiwen/weiwen-weiwen-SNAPSHOTS.war   root@10.8.2.169:/www/wwo-weiwen
+--------------------------------------------------------------------------------
+xindong.xiong
+
+
+nexus
+admin
+admin123
+
+
+
+测试机 192.168.1.51 root doudou 包括平台(/usr/local/wenwo/wenwo-platform)、定时任务(/usr/local/wenwo/wenwo-schedule)、nginx
+	   192.168.1.65~71 前端项目(/usr/local/webserver)
+
+
+平台测试发布流程：
+	1.右键wenwo-platform-parent-->Meavn clean-->clean整个项目(project-->clean) 保持包最新
+	2.deploy-右键wenwo-platform-parent-->Run as-->第一次运行:选第二个Meavn build... 参数Goals填deploy
+										   以后运行：选第一个Meavn build 选择后面有deploy的
+	3.打包-右键wenwo-platform-parent-->Run as-->第一次运行:选第二个Meavn build... 参数Goals填package
+										   以后运行：选第一个Meavn build 选择后面有package的
+	4.运用ant部署并发布 右键build-51.xml-->Run as-->Ant Buil				
+	 
