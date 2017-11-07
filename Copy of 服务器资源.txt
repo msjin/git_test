@@ -1,4 +1,4 @@
-(不完全正确，需要到nginx查看)
+ok(不完全正确，需要到nginx查看)
 平台
      platform1 	
 	 10.8.2.159     kohng2Aoko
